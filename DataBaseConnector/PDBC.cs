@@ -20,6 +20,24 @@ namespace DataBaseConnector
             return _TransActionReports;
         }
         private bool _IsConnectionOpen = false;
+        public void Connect()
+        {
+            try
+            {
+                connection.Open();
+                _IsConnectionOpen = true;
+            }
+            catch { }
+        }
+        public void DC()
+        {
+            try
+            {
+                connection.Close();
+                _IsConnectionOpen = false;
+            }
+            catch { }
+        }
         /// <summary>
         /// Exception Object To show What Happened !
         /// </summary>
