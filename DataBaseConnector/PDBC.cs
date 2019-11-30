@@ -51,12 +51,12 @@ namespace DataBaseConnector
         /// version 0.01
         /// can connect to database and Do smt...
         /// </summary>
-        public PDBC()
+        public PDBC(string ASPArg = "PandaSQLConnect")
         {
             //For ASP.net
             try
             {
-                _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings["PandaSQLConnect"].ConnectionString;
+                _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings[ASPArg].ConnectionString;
                 connection = new SqlConnection(_ConnectionString);
             }
             catch
