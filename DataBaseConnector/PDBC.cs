@@ -51,23 +51,31 @@ namespace DataBaseConnector
         /// version 0.01
         /// can connect to database and Do smt...
         /// </summary>
-        public PDBC(string ASPArg = "PandaSQLConnect")
+        public PDBC(string ASPArg, bool Using_Wconfig)
         {
             //For ASP.net
             try
             {
-                _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings[ASPArg].ConnectionString;
-                connection = new SqlConnection(_ConnectionString);
-            }
-            catch
-            {
-                System.IO.StreamReader reader = new System.IO.StreamReader("DB.config");
-                string DBConnection = reader.ReadLine();
-                reader.Close();
-                connection = new SqlConnection(DBConnection);
+                if (Using_Wconfig)
+                {
 
+                    _ConnectionString = System.Configuration.ConfigurationManager.ConnectionStrings[ASPArg].ConnectionString;
+                    connection = new SqlConnection(_ConnectionString);
+                }
+                else
+                {
+                    System.IO.StreamReader reader = new System.IO.StreamReader(ASPArg);
+                    string DBConnection = reader.ReadLine();
+                    reader.Close();
+                    connection = new SqlConnection(DBConnection);
+                }
+                _EXCReporter = null;
             }
-            _EXCReporter = new Exception();
+            catch (Exception ex)
+            {
+
+                _EXCReporter = ex;
+            }
         }
         /// <summary>
         /// a Library for Mssql connections and actions
@@ -76,6 +84,7 @@ namespace DataBaseConnector
         /// if using Parameter write your query like this
         /// "insert into Tablename (Parameter1,Parameter2) Values( @Parameter1 , @Parameter2)
         /// then create a list of ExcParameters that _KEY == @Parameter1 And _VALUE == value of Parameter1
+        /// Use List<ExcParameters> to send SafeParameterInsert <3
         /// </summary>
         /// <param name="Query">QueryWithParameters</param>
         /// <param name="SafeParameterInsert">"@Parameter"</param>
@@ -122,8 +131,6 @@ namespace DataBaseConnector
         {
             if (_IsConnectionOpen)
             {
-
-
                 DataTable dt = new DataTable();
                 try
                 {
